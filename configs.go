@@ -194,6 +194,7 @@ type MessageConfig struct {
 	Text                  string
 	ParseMode             string
 	DisableWebPagePreview bool
+	Entities []MessageEntity
 }
 
 // values returns a url.Values representation of MessageConfig.
@@ -206,6 +207,13 @@ func (config MessageConfig) values() (url.Values, error) {
 	v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
 	if config.ParseMode != "" {
 		v.Add("parse_mode", config.ParseMode)
+	}
+	if len(config.Entities) > 0 {
+		bytes, err := json.Marshal(config.Entities)
+		if err != nil {
+			return v, err
+		}
+		v.Add("entities", string(bytes))
 	}
 
 	return v, nil
